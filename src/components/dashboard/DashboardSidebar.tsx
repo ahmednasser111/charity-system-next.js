@@ -8,8 +8,6 @@ import { LayoutDashboard, Users, HeartHandshake, LogOut, FileText, Settings } fr
 const routes = [
   { name: 'Overview', path: '/dashboard', icon: LayoutDashboard },
   { name: 'Patients', path: '/dashboard/patients', icon: Users },
-  { name: 'Campaigns', path: '/dashboard/campaigns', icon: FileText },
-  { name: 'Donations', path: '/dashboard/donations', icon: HeartHandshake },
   { name: 'Profile', path: '/dashboard/profile', icon: Settings },
 ];
 
