@@ -18,8 +18,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useI18n } from '@/components/providers/I18nProvider';
 
 export function CreateUserDialog() {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -46,15 +48,15 @@ export function CreateUserDialog() {
 
       if (!res.ok) {
         const result = await res.json();
-        throw new Error(result.error || 'Failed to create user');
+        throw new Error(result.error || t('users.dialog.error'));
       }
 
-      toast.success('User created successfully');
+      toast.success(t('users.dialog.success'));
       setOpen(false);
       form.reset();
       router.refresh();
     } catch (error: any) {
-      toast.error(error.message || 'Something went wrong');
+      toast.error(error.message || t('auth.errorGeneric'));
     } finally {
       setIsLoading(false);
     }
@@ -63,13 +65,13 @@ export function CreateUserDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Add User</Button>
+        <Button>{t('users.addUser')}</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add New User</DialogTitle>
+          <DialogTitle>{t('users.dialog.title')}</DialogTitle>
           <DialogDescription>
-            Create a new user account with specific role privileges.
+            {t('users.dialog.description')}
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -80,7 +82,7 @@ export function CreateUserDialog() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Full Name</FormLabel>
+                    <FormLabel>{t('users.dialog.name')}</FormLabel>
                     <FormControl><Input {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
@@ -91,8 +93,8 @@ export function CreateUserDialog() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl><Input type="email" placeholder="name@example.com" {...field} /></FormControl>
+                    <FormLabel>{t('users.dialog.email')}</FormLabel>
+                    <FormControl><Input type="email" placeholder={t('auth.emailPlaceholder')} {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -102,7 +104,7 @@ export function CreateUserDialog() {
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Phone</FormLabel>
+                    <FormLabel>{t('users.dialog.phone')}</FormLabel>
                     <FormControl><Input {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
@@ -113,7 +115,7 @@ export function CreateUserDialog() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Temporary Password</FormLabel>
+                    <FormLabel>{t('users.dialog.password')}</FormLabel>
                     <FormControl><Input type="password" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
@@ -124,14 +126,14 @@ export function CreateUserDialog() {
                 name="role"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Role</FormLabel>
+                    <FormLabel>{t('users.dialog.role')}</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger><SelectValue placeholder="Select Role" /></SelectTrigger>
+                        <SelectTrigger><SelectValue placeholder={t('users.dialog.selectRole')} /></SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         {['admin', 'user'].map(role => (
-                            <SelectItem key={role} value={role}>{role}</SelectItem>
+                            <SelectItem key={role} value={role}>{t(`users.dialog.${role}`)}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -140,7 +142,7 @@ export function CreateUserDialog() {
                 )}
               />
               <Button type="submit" disabled={isLoading} className="w-full">
-                Create User
+                {t('users.dialog.submit')}
               </Button>
             </form>
           </Form>

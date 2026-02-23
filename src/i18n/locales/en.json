@@ -1,0 +1,131 @@
+{
+  "common": {
+    "appName": "Charity System",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "actions": "Actions"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "patients": "Patients",
+    "users": "Users",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "auth": {
+    "loginTitle": "Login",
+    "loginSubtitle": "Enter your email and password to log in",
+    "email": "Email",
+    "emailPlaceholder": "name@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "••••••••",
+    "loginButton": "Sign In",
+    "forgotPassword": "Forgot password?",
+    "invalidCredentials": "Invalid email or password",
+    "loginFailed": "Login Failed",
+    "loginSuccess": "Logged in successfully",
+    "errorGeneric": "Something went wrong, please try again."
+  },
+  "dashboard": {
+    "overviewTitle": "Overview",
+    "totalUsers": "Total Users",
+    "totalPatients": "Total Patients",
+    "patientsTitle": "Patients Management"
+  },
+  "users": {
+    "title": "Users Management",
+    "addUser": "Add User",
+    "dialog": {
+      "title": "Add New User",
+      "description": "Create a new user account with specific role privileges.",
+      "name": "Full Name",
+      "email": "Email",
+      "phone": "Phone",
+      "password": "Temporary Password",
+      "role": "Role",
+      "selectRole": "Select Role",
+      "admin": "Admin",
+      "user": "User",
+      "submit": "Create User",
+      "success": "User created successfully",
+      "error": "Failed to create user"
+    },
+    "table": {
+      "systemId": "System ID",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "role": "Role",
+      "joinedDate": "Joined Date",
+      "noUsers": "No users found"
+    }
+  },
+  "patients": {
+    "title": "Patients Management",
+    "addPatient": "Add Patient",
+    "editPatient": "Edit Patient",
+    "searchPlaceholder": "Search by name, phone, or SSN",
+    "filterPlaceholder": "Filter by status",
+    "all": "All",
+    "completed": "Completed",
+    "pending": "Pending",
+    "rejected": "Rejected",
+    "approved": "Approved",
+    "results": "{{count}} patients",
+    "resultsFiltered": "{{count}} of {{total}} patients",
+    "status": "Status",
+    "dialog": {
+      "createTitle": "Add New Patient",
+      "editTitle": "Edit Patient",
+      "createDescription": "Enter the details for the new patient beneficiary.",
+      "editDescription": "Update the details for this patient.",
+      "name": "Full Name",
+      "age": "Age",
+      "phone": "Phone",
+      "ssn": "National ID (SSN)",
+      "status": "Status",
+      "selectStatus": "Select Status",
+      "maritalStatus": "Marital Status",
+      "selectMaritalStatus": "Select Marital Status",
+      "single": "Single",
+      "married": "Married",
+      "divorced": "Divorced",
+      "widowed": "Widowed",
+      "children": "Number of Children",
+      "cost": "Requested Cost",
+      "governorate": "Governorate",
+      "address": "Address",
+      "diagnosis": "Diagnosis",
+      "solution": "Proposed Solution",
+      "save": "Save Patient",
+      "update": "Update Patient",
+      "successCreate": "Patient created successfully",
+      "successUpdate": "Patient updated successfully",
+      "error": "Failed to save patient"
+    },
+    "table": {
+      "name": "Name",
+      "phone": "Phone",
+      "age": "Age",
+      "ssn": "SSN",
+      "status": "Status",
+      "cost": "Requested Cost",
+      "addedDate": "Date Added",
+      "noPatients": "No patients found"
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "userNotFound": "User not found",
+    "updateProfile": "Update Profile",
+    "info": "Profile Information",
+    "description": "Your profile details are managed by the administrator and cannot be edited here.",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone Number",
+    "readOnly": "Profile is read-only"
+  }
+}

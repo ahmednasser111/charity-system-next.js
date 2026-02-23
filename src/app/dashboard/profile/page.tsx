@@ -4,10 +4,14 @@ import { redirect } from 'next/navigation';
 import dbConnect from '@/lib/dbConnect';
 import User from '@/models/User';
 import { ProfileForm } from '@/components/dashboard/ProfileForm';
+import { getInitialLocale } from '@/i18n/server';
+import { translate } from '@/i18n/translate';
 
 export const dynamic = 'force-dynamic';
 
 export default async function ProfilePage() {
+  const locale = await getInitialLocale();
+  const t = (key: string) => translate(locale, key);
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user) {
@@ -20,15 +24,15 @@ export default async function ProfilePage() {
   if (!user) {
     return (
       <div className="flex flex-col gap-4">
-        <h1 className="text-3xl font-bold tracking-tight">Profile</h1>
-        <p className="text-muted-foreground">User not found.</p>
+        <h1 className="text-3xl font-bold tracking-tight">{t('profile.title')}</h1>
+        <p className="text-muted-foreground">{t('profile.userNotFound')}</p>
       </div>
     );
   }
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-3xl font-bold tracking-tight">Profile</h1>
+      <h1 className="text-3xl font-bold tracking-tight">{t('profile.title')}</h1>
       
       <div className="grid gap-6 items-start">
         <ProfileForm 

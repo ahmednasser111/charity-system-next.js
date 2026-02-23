@@ -5,10 +5,14 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { redirect } from 'next/navigation';
 import { PatientsTable } from '@/components/dashboard/patients/PatientsTable';
+import { getInitialLocale } from '@/i18n/server';
+import { translate } from '@/i18n/translate';
 
 export const dynamic = 'force-dynamic';
 
 export default async function PatientsPage() {
+  const locale = await getInitialLocale();
+  const t = (key: string) => translate(locale, key);
   const session = await getServerSession(authOptions);
   
   if (!session || !['admin', 'user'].includes(session.user.role)) {
@@ -39,7 +43,7 @@ export default async function PatientsPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Patients</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{t('patients.title')}</h1>
         <CreatePatientDialog />
       </div>
 

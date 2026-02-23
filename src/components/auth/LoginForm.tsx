@@ -18,8 +18,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import { useI18n } from '@/components/providers/I18nProvider';
 
 export function LoginForm() {
+  const { t } = useI18n();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
@@ -44,16 +46,16 @@ export function LoginForm() {
       });
 
       if (result?.error) {
-        toast.error('Login Failed', {
+        toast.error(t('auth.loginFailed'), {
           description: result.error,
         });
       } else {
-        toast.success('Logged in successfully');
+        toast.success(t('auth.loginSuccess'));
         router.push(callbackUrl);
         router.refresh(); // Ensure server components get the latest session state
       }
     } catch (error) {
-      toast.error('Something went wrong, please try again.');
+      toast.error(t('auth.errorGeneric'));
     } finally {
       setIsLoading(false);
     }
@@ -68,9 +70,9 @@ export function LoginForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{t('auth.email')}</FormLabel>
                 <FormControl>
-                  <Input placeholder="name@example.com" type="email" disabled={isLoading} {...field} />
+                  <Input placeholder={t('auth.emailPlaceholder')} type="email" disabled={isLoading} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -81,9 +83,9 @@ export function LoginForm() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>{t('auth.password')}</FormLabel>
                 <FormControl>
-                  <Input placeholder="••••••••" type="password" disabled={isLoading} {...field} />
+                  <Input placeholder={t('auth.passwordPlaceholder')} type="password" disabled={isLoading} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -91,7 +93,7 @@ export function LoginForm() {
           />
           <Button disabled={isLoading} className="w-full mt-4">
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Sign In
+            {t('auth.loginButton')}
           </Button>
         </form>
       </Form>

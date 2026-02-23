@@ -19,6 +19,8 @@ import {
 } from '@/components/ui/select';
 import { EditPatientDialog } from '@/components/dashboard/patients/CreatePatientDialog';
 import { Button } from '@/components/ui/button';
+import { useI18n } from '@/components/providers/I18nProvider';
+import { formatDate, formatNumber } from '@/i18n/translate';
 
 export type PatientRecord = {
   _id: string;
@@ -116,6 +118,7 @@ export function transformPatients(
 }
 
 export function PatientsTable({ patients }: PatientsTableProps) {
+  const { t, locale } = useI18n();
   const [searchInput, setSearchInput] = useState('');
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
@@ -157,8 +160,10 @@ export function PatientsTable({ patients }: PatientsTableProps) {
 
   const resultsCountText =
     filteredPatients.length === patients.length
-      ? `${filteredPatients.length} patients`
-      : `${filteredPatients.length} of ${patients.length} patients`;
+      ? t('patients.results').replace('{{count}}', formatNumber(locale, filteredPatients.length))
+      : t('patients.resultsFiltered')
+          .replace('{{count}}', formatNumber(locale, filteredPatients.length))
+          .replace('{{total}}', formatNumber(locale, patients.length));
 
   const renderSortArrow = (field: SortField) => {
     if (sortField !== field || !sortDirection) {
@@ -177,7 +182,7 @@ export function PatientsTable({ patients }: PatientsTableProps) {
       <div className='flex flex-col gap-3 md:flex-row md:items-center md:justify-between'>
         <div className='flex flex-col gap-2 md:flex-row md:items-center md:gap-3'>
           <Input
-            placeholder='Search by name, phone, or SSN'
+            placeholder={t('patients.searchPlaceholder')}
             value={searchInput}
             onChange={(event) => setSearchInput(event.target.value)}
             className='w-full md:max-w-sm'
@@ -188,12 +193,12 @@ export function PatientsTable({ patients }: PatientsTableProps) {
               onValueChange={(value) => setStatusFilter(value as StatusFilter)}
             >
               <SelectTrigger className='w-[160px]'>
-                <SelectValue placeholder='Filter by status' />
+                <SelectValue placeholder={t('patients.filterPlaceholder')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value='all'>All</SelectItem>
-                <SelectItem value='completed'>Completed</SelectItem>
-                <SelectItem value='pending'>Pending</SelectItem>
+                <SelectItem value='all'>{t('patients.all')}</SelectItem>
+                <SelectItem value='completed'>{t('patients.completed')}</SelectItem>
+                <SelectItem value='pending'>{t('patients.pending')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -201,9 +206,9 @@ export function PatientsTable({ patients }: PatientsTableProps) {
         <div className='text-muted-foreground flex items-center gap-3 text-sm'>
           <span>{resultsCountText}</span>
           {statusFilter !== 'all' && (
-            <span>Status: {statusFilter === 'completed' ? 'Completed' : 'Pending'}</span>
+            <span>{t('patients.status')}: {statusFilter === 'completed' ? t('patients.completed') : t('patients.pending')}</span>
           )}
-          {isLoading && <span>Loading...</span>}
+          {isLoading && <span>{t('common.loading')}</span>}
         </div>
       </div>
 
@@ -212,25 +217,25 @@ export function PatientsTable({ patients }: PatientsTableProps) {
           <TableRow>
             <TableHead className='cursor-pointer select-none' onClick={() => handleSort('name')}>
               <span className='inline-flex items-center gap-1'>
-                Name
+                {t('patients.table.name')}
                 {renderSortArrow('name')}
               </span>
             </TableHead>
             <TableHead className='cursor-pointer select-none' onClick={() => handleSort('phone')}>
               <span className='inline-flex items-center gap-1'>
-                Phone
+                {t('patients.table.phone')}
                 {renderSortArrow('phone')}
               </span>
             </TableHead>
             <TableHead className='cursor-pointer select-none' onClick={() => handleSort('status')}>
               <span className='inline-flex items-center gap-1'>
-                Status
+                {t('patients.table.status')}
                 {renderSortArrow('status')}
               </span>
             </TableHead>
             <TableHead className='cursor-pointer select-none' onClick={() => handleSort('cost')}>
               <span className='inline-flex items-center gap-1'>
-                Requested Cost
+                {t('patients.table.cost')}
                 {renderSortArrow('cost')}
               </span>
             </TableHead>
@@ -239,18 +244,18 @@ export function PatientsTable({ patients }: PatientsTableProps) {
               onClick={() => handleSort('createdAt')}
             >
               <span className='inline-flex items-center gap-1'>
-                Date Added
+                {t('patients.table.addedDate')}
                 {renderSortArrow('createdAt')}
               </span>
             </TableHead>
-            <TableHead className='text-right'>Actions</TableHead>
+            <TableHead className='text-right'>{t('common.actions')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {filteredPatients.length === 0 ? (
             <TableRow>
               <TableCell colSpan={6} className='h-24 text-center'>
-                No patients found.
+                {t('patients.table.noPatients')}
               </TableCell>
             </TableRow>
           ) : (
@@ -258,10 +263,10 @@ export function PatientsTable({ patients }: PatientsTableProps) {
               <TableRow key={patient._id}>
                 <TableCell className='font-medium'>{patient.name}</TableCell>
                 <TableCell>{patient.phone}</TableCell>
-                <TableCell>{patient.status}</TableCell>
-                <TableCell>${patient.cost}</TableCell>
+                <TableCell>{t(`patients.${patient.status}`)}</TableCell>
+                <TableCell>{formatNumber(locale, patient.cost)}</TableCell>
                 <TableCell>
-                  {patient.createdAt ? new Date(patient.createdAt).toLocaleDateString('en-GB') : ''}
+                  {patient.createdAt ? formatDate(locale, patient.createdAt) : ''}
                 </TableCell>
                 <TableCell className='space-x-2 text-right'>
                   <EditPatientDialog patient={patient} />

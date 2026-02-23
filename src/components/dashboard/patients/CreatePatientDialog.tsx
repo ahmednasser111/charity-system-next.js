@@ -20,6 +20,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useI18n } from '@/components/providers/I18nProvider';
 
 interface BasePatientDialogProps {
   open: boolean;
@@ -38,6 +39,7 @@ function BasePatientDialog({
   mode,
   onSuccess,
 }: BasePatientDialogProps) {
+  const { t } = useI18n();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -73,16 +75,16 @@ function BasePatientDialog({
       });
 
       if (!res.ok) {
-        throw new Error('Failed to save patient');
+        throw new Error(t('patients.dialog.error'));
       }
 
-      toast.success(`Patient ${mode === 'create' ? 'created' : 'updated'} successfully`);
+      toast.success(t(mode === 'create' ? 'patients.dialog.successCreate' : 'patients.dialog.successUpdate'));
       setOpen(false);
       form.reset();
       router.refresh();
       onSuccess?.();
-    } catch (error) {
-      toast.error('Something went wrong');
+    } catch (error: any) {
+      toast.error(error.message || t('auth.errorGeneric'));
     } finally {
       setIsLoading(false);
     }
@@ -92,11 +94,9 @@ function BasePatientDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{mode === 'create' ? 'Add New Patient' : 'Edit Patient'}</DialogTitle>
+          <DialogTitle>{t(mode === 'create' ? 'patients.dialog.createTitle' : 'patients.dialog.editTitle')}</DialogTitle>
           <DialogDescription>
-            {mode === 'create'
-              ? 'Enter the details for the new patient beneficiary.'
-              : 'Update the details for this patient.'}
+            {t(mode === 'create' ? 'patients.dialog.createDescription' : 'patients.dialog.editDescription')}
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -107,7 +107,7 @@ function BasePatientDialog({
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Full Name</FormLabel>
+                    <FormLabel>{t('patients.dialog.name')}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -122,7 +122,7 @@ function BasePatientDialog({
                   name="age"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Age</FormLabel>
+                      <FormLabel>{t('patients.dialog.age')}</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -139,7 +139,7 @@ function BasePatientDialog({
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone</FormLabel>
+                      <FormLabel>{t('patients.dialog.phone')}</FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -154,7 +154,7 @@ function BasePatientDialog({
                 name="ssn"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>National ID (SSN)</FormLabel>
+                    <FormLabel>{t('patients.dialog.ssn')}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -169,17 +169,17 @@ function BasePatientDialog({
                   name="status"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Status</FormLabel>
+                      <FormLabel>{t('patients.dialog.status')}</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select Status" />
+                            <SelectValue placeholder={t('patients.dialog.selectStatus')} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                           {['pending', 'approved', 'rejected'].map((state) => (
                             <SelectItem key={state} value={state}>
-                              {state}
+                              {t(`patients.${state}`)}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -193,17 +193,17 @@ function BasePatientDialog({
                   name="maritalStatus"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Marital Status</FormLabel>
+                      <FormLabel>{t('patients.dialog.maritalStatus')}</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select Marital Status" />
+                            <SelectValue placeholder={t('patients.dialog.selectMaritalStatus')} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                           {['single', 'married', 'divorced', 'widowed'].map((status) => (
                             <SelectItem key={status} value={status}>
-                              {status}
+                              {t(`patients.dialog.${status}`)}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -220,7 +220,7 @@ function BasePatientDialog({
                   name="children"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Number of Children</FormLabel>
+                      <FormLabel>{t('patients.dialog.children')}</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -237,7 +237,7 @@ function BasePatientDialog({
                   name="cost"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Requested Cost ($)</FormLabel>
+                      <FormLabel>{t('patients.dialog.cost')}</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -256,7 +256,7 @@ function BasePatientDialog({
                 name="governorate"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Governorate</FormLabel>
+                    <FormLabel>{t('patients.dialog.governorate')}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -270,7 +270,7 @@ function BasePatientDialog({
                 name="address"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Address</FormLabel>
+                    <FormLabel>{t('patients.dialog.address')}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -284,7 +284,7 @@ function BasePatientDialog({
                 name="diagnosis"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Diagnosis</FormLabel>
+                    <FormLabel>{t('patients.dialog.diagnosis')}</FormLabel>
                     <FormControl>
                       <Textarea rows={3} {...field} />
                     </FormControl>
@@ -298,7 +298,7 @@ function BasePatientDialog({
                 name="solution"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Proposed Solution</FormLabel>
+                    <FormLabel>{t('patients.dialog.solution')}</FormLabel>
                     <FormControl>
                       <Textarea rows={3} {...field} />
                     </FormControl>
@@ -308,7 +308,7 @@ function BasePatientDialog({
               />
 
               <Button type="submit" disabled={isLoading} className="w-full">
-                {mode === 'create' ? 'Save Patient' : 'Update Patient'}
+                {t(mode === 'create' ? 'patients.dialog.save' : 'patients.dialog.update')}
               </Button>
             </form>
           </Form>
@@ -319,12 +319,13 @@ function BasePatientDialog({
 }
 
 export function CreatePatientDialog() {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button suppressHydrationWarning>Add Patient</Button>
+        <Button suppressHydrationWarning>{t('patients.addPatient')}</Button>
       </DialogTrigger>
       <BasePatientDialog open={open} setOpen={setOpen} mode="create" />
     </Dialog>
@@ -336,13 +337,14 @@ export function EditPatientDialog({
 }: {
   patient: any;
 }) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" suppressHydrationWarning>
-          Edit
+          {t('common.edit')}
         </Button>
       </DialogTrigger>
       <BasePatientDialog

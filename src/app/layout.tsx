@@ -30,20 +30,26 @@ export const metadata: Metadata = {
 
 import { AuthProvider } from '@/components/providers/AuthProvider';
 import { Toaster } from '@/components/ui/sonner';
+import { I18nProvider } from '@/components/providers/I18nProvider';
+import { getInitialLocale } from '@/i18n/server';
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getInitialLocale();
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
-          {children}
-          <Toaster position="top-right" />
+          <I18nProvider initialLocale={locale}>
+            {children}
+            <Toaster position="top-right" />
+          </I18nProvider>
         </AuthProvider>
       </body>
     </html>
