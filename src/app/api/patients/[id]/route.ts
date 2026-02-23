@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Patient from '@/models/Patient';
 import { patientSchema } from '@/validations/patient';
@@ -18,17 +18,18 @@ async function ensureAuthorized() {
 }
 
 export async function GET(
-  _req: Request,
-  { params }: { params: { id: string } }
+  _req: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const session = await ensureAuthorized();
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     await dbConnect();
-    const patient = await Patient.findById(params.id);
+    const patient = await Patient.findById(id);
 
     if (!patient) {
       return NextResponse.json({ error: 'Patient not found' }, { status: 404 });
@@ -41,10 +42,11 @@ export async function GET(
 }
 
 export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const session = await ensureAuthorized();
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -58,11 +60,9 @@ export async function PUT(
 
     await dbConnect();
 
-    const updatedPatient = await Patient.findByIdAndUpdate(
-      params.id,
-      validatedData,
-      { new: true }
-    );
+    const updatedPatient = await Patient.findByIdAndUpdate(id, validatedData, {
+      new: true,
+    });
 
     if (!updatedPatient) {
       return NextResponse.json({ error: 'Patient not found' }, { status: 404 });
@@ -78,10 +78,11 @@ export async function PUT(
 }
 
 export async function DELETE(
-  _req: Request,
-  { params }: { params: { id: string } }
+  _req: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const session = await ensureAuthorized();
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -89,7 +90,7 @@ export async function DELETE(
 
     await dbConnect();
 
-    const deleted = await Patient.findByIdAndDelete(params.id);
+    const deleted = await Patient.findByIdAndDelete(id);
 
     if (!deleted) {
       return NextResponse.json({ error: 'Patient not found' }, { status: 404 });
