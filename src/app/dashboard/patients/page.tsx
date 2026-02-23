@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 export default async function PatientsPage() {
   const session = await getServerSession(authOptions);
   
-  if (!session || !['admin', 'editor', 'volunteer'].includes(session.user.role)) {
+  if (!session || !['admin', 'user'].includes(session.user.role)) {
     redirect('/dashboard');
   }
 

@@ -13,7 +13,7 @@ const UserSchema: Schema = new Schema(
     email: { type: String, required: true, unique: true },
     phone: { type: String },
     password: { type: String, required: true },
-    role: { type: String, enum: ['admin', 'editor', 'user', 'donor', 'volunteer'], default: 'user' },
+    role: { type: String, enum: ['admin', 'user'], default: 'user' },
   },
   { timestamps: true }
 );

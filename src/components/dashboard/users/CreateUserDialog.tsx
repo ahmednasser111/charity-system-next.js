@@ -31,7 +31,7 @@ export function CreateUserDialog() {
       email: '',
       phone: '',
       password: '',
-      role: 'donor',
+      role: 'user',
     },
   });
 
@@ -130,7 +130,7 @@ export function CreateUserDialog() {
                         <SelectTrigger><SelectValue placeholder="Select Role" /></SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {['admin', 'editor', 'donor', 'volunteer', 'beneficiary'].map(role => (
+                        {['admin', 'user'].map(role => (
                             <SelectItem key={role} value={role}>{role}</SelectItem>
                         ))}
                       </SelectContent>
