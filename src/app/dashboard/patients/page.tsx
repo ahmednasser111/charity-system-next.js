@@ -16,7 +16,25 @@ export default async function PatientsPage() {
   }
 
   await dbConnect();
-  const patients = await Patient.find({}).sort({ createdAt: -1 });
+  const patientDocs = await Patient.find({}).sort({ createdAt: -1 }).lean();
+
+  const patients = patientDocs.map((p: any) => ({
+    _id: p._id.toString(),
+    name: p.name,
+    age: p.age,
+    ssn: p.ssn,
+    phone: p.phone,
+    maritalStatus: p.maritalStatus,
+    status: p.status,
+    children: p.children,
+    governorate: p.governorate,
+    address: p.address,
+    diagnosis: p.diagnosis,
+    solution: p.solution,
+    cost: p.cost,
+    createdAt: p.createdAt?.toISOString?.() ?? String(p.createdAt),
+    updatedAt: p.updatedAt?.toISOString?.() ?? String(p.updatedAt),
+  }));
 
   return (
     <div className="flex flex-col gap-6">
