@@ -41,15 +41,18 @@ export default async function PatientsPage() {
   }));
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">{t('patients.title')}</h1>
+    <div className='flex flex-col gap-6'>
+      <div className='flex items-center justify-between px-4'>
+        <div>
+          <h1 className='text-3xl font-bold tracking-tight'>{t('patients.title')}</h1>
+          <p className='text-muted-foreground mt-1 text-sm'>
+            {t('patients.subtitle') || 'Manage and track patient beneficiary records'}
+          </p>
+        </div>
         <CreatePatientDialog />
       </div>
 
-      <div className="rounded-md border bg-white">
-        <PatientsTable patients={patients} />
-      </div>
+      <PatientsTable patients={patients} />
     </div>
   );
 }

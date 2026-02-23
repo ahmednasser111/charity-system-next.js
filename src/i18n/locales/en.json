@@ -36,7 +36,8 @@
     "patientsTitle": "Patients Management"
   },
   "users": {
-    "title": "Users Management",
+    "title": "Users",
+    "subtitle": "Manage and monitor system user accounts and roles",
     "addUser": "Add User",
     "dialog": {
       "title": "Add New User",
@@ -64,7 +65,8 @@
     }
   },
   "patients": {
-    "title": "Patients Management",
+    "title": "Patients",
+    "subtitle": "Manage and track patient beneficiary records",
     "addPatient": "Add Patient",
     "editPatient": "Edit Patient",
     "searchPlaceholder": "Search by name, phone, or SSN",

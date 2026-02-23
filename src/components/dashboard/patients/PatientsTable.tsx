@@ -178,16 +178,35 @@ export function PatientsTable({ patients }: PatientsTableProps) {
   };
 
   return (
-    <div className='space-y-4 p-4'>
-      <div className='flex flex-col gap-3 md:flex-row md:items-center md:justify-between'>
-        <div className='flex flex-col gap-2 md:flex-row md:items-center md:gap-3'>
-          <Input
-            placeholder={t('patients.searchPlaceholder')}
-            value={searchInput}
-            onChange={(event) => setSearchInput(event.target.value)}
-            className='w-full md:max-w-sm'
-          />
-          <div className='flex items-center gap-2'>
+    <div className='flex flex-col gap-6 p-4'>
+      <div className='bg-card flex flex-col gap-4 rounded-xl border p-4 shadow-sm'>
+        <div className='flex flex-col gap-4 md:flex-row md:items-center md:justify-between'>
+          <div className='relative flex flex-1 items-center max-w-md'>
+            <Input
+              placeholder={t('patients.searchPlaceholder')}
+              value={searchInput}
+              onChange={(event) => setSearchInput(event.target.value)}
+              className='w-full ps-9'
+            />
+            <div className='text-muted-foreground pointer-events-none absolute inset-y-0 flex items-center ps-3 start-0'>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                width='16'
+                height='16'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                className='lucide lucide-search'
+              >
+                <circle cx='11' cy='11' r='8' />
+                <path d='m21 21-4.3-4.3' />
+              </svg>
+            </div>
+          </div>
+          <div className='flex flex-wrap items-center gap-3'>
             <Select
               value={statusFilter}
               onValueChange={(value) => setStatusFilter(value as StatusFilter)}
@@ -201,81 +220,101 @@ export function PatientsTable({ patients }: PatientsTableProps) {
                 <SelectItem value='pending'>{t('patients.pending')}</SelectItem>
               </SelectContent>
             </Select>
+            <div className='bg-muted/50 hidden h-8 w-[1px] md:block' />
+            <div className='text-muted-foreground flex items-center gap-2 text-sm font-medium'>
+               <span className='bg-primary/10 text-primary rounded-full px-2 py-0.5 text-xs'>
+                {resultsCountText}
+              </span>
+              {isLoading && <span className='animate-pulse'>{t('common.loading')}</span>}
+            </div>
           </div>
-        </div>
-        <div className='text-muted-foreground flex items-center gap-3 text-sm'>
-          <span>{resultsCountText}</span>
-          {statusFilter !== 'all' && (
-            <span>{t('patients.status')}: {statusFilter === 'completed' ? t('patients.completed') : t('patients.pending')}</span>
-          )}
-          {isLoading && <span>{t('common.loading')}</span>}
         </div>
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className='cursor-pointer select-none' onClick={() => handleSort('name')}>
-              <span className='inline-flex items-center gap-1'>
-                {t('patients.table.name')}
-                {renderSortArrow('name')}
-              </span>
-            </TableHead>
-            <TableHead className='cursor-pointer select-none' onClick={() => handleSort('phone')}>
-              <span className='inline-flex items-center gap-1'>
-                {t('patients.table.phone')}
-                {renderSortArrow('phone')}
-              </span>
-            </TableHead>
-            <TableHead className='cursor-pointer select-none' onClick={() => handleSort('status')}>
-              <span className='inline-flex items-center gap-1'>
-                {t('patients.table.status')}
-                {renderSortArrow('status')}
-              </span>
-            </TableHead>
-            <TableHead className='cursor-pointer select-none' onClick={() => handleSort('cost')}>
-              <span className='inline-flex items-center gap-1'>
-                {t('patients.table.cost')}
-                {renderSortArrow('cost')}
-              </span>
-            </TableHead>
-            <TableHead
-              className='cursor-pointer select-none'
-              onClick={() => handleSort('createdAt')}
-            >
-              <span className='inline-flex items-center gap-1'>
-                {t('patients.table.addedDate')}
-                {renderSortArrow('createdAt')}
-              </span>
-            </TableHead>
-            <TableHead className='text-right'>{t('common.actions')}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredPatients.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={6} className='h-24 text-center'>
-                {t('patients.table.noPatients')}
-              </TableCell>
-            </TableRow>
-          ) : (
-            filteredPatients.map((patient) => (
-              <TableRow key={patient._id}>
-                <TableCell className='font-medium'>{patient.name}</TableCell>
-                <TableCell>{patient.phone}</TableCell>
-                <TableCell>{t(`patients.${patient.status}`)}</TableCell>
-                <TableCell>{formatNumber(locale, patient.cost)}</TableCell>
-                <TableCell>
-                  {patient.createdAt ? formatDate(locale, patient.createdAt) : ''}
-                </TableCell>
-                <TableCell className='space-x-2 text-right'>
-                  <EditPatientDialog patient={patient} />
-                </TableCell>
+      <div className='rounded-xl border bg-card shadow-sm overflow-hidden'>
+        <div className='overflow-x-auto overflow-y-hidden'>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className='cursor-pointer select-none' onClick={() => handleSort('name')}>
+                  <span className='inline-flex items-center gap-1'>
+                    {t('patients.table.name')}
+                    {renderSortArrow('name')}
+                  </span>
+                </TableHead>
+                <TableHead className='cursor-pointer select-none' onClick={() => handleSort('phone')}>
+                  <span className='inline-flex items-center gap-1'>
+                    {t('patients.table.phone')}
+                    {renderSortArrow('phone')}
+                  </span>
+                </TableHead>
+                <TableHead className='cursor-pointer select-none text-start' onClick={() => handleSort('status')}>
+                  <span className='inline-flex items-center gap-1'>
+                    {t('patients.table.status')}
+                    {renderSortArrow('status')}
+                  </span>
+                </TableHead>
+                <TableHead className='cursor-pointer select-none text-end' onClick={() => handleSort('cost')}>
+                  <div className='inline-flex items-center gap-1 justify-end w-full'>
+                    {t('patients.table.cost')}
+                    {renderSortArrow('cost')}
+                  </div>
+                </TableHead>
+                <TableHead
+                  className='cursor-pointer select-none text-end'
+                  onClick={() => handleSort('createdAt')}
+                >
+                  <div className='inline-flex items-center gap-1 justify-end w-full'>
+                    {t('patients.table.addedDate')}
+                    {renderSortArrow('createdAt')}
+                  </div>
+                </TableHead>
+                <TableHead className='text-end'>{t('common.actions')}</TableHead>
               </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
+            </TableHeader>
+            <TableBody>
+              {filteredPatients.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className='h-24 text-center'>
+                    {t('patients.table.noPatients')}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredPatients.map((patient) => (
+                  <TableRow key={patient._id}>
+                    <TableCell className='font-medium text-start'>{patient.name}</TableCell>
+                    <TableCell className='text-start'>{patient.phone}</TableCell>
+                    <TableCell className='text-start'>
+                      <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset ${
+                        patient.status === 'approved' 
+                          ? 'bg-green-50 text-green-700 ring-green-600/20' 
+                          : patient.status === 'pending'
+                          ? 'bg-yellow-50 text-yellow-800 ring-yellow-600/20'
+                          : 'bg-red-50 text-red-700 ring-red-600/20'
+                      }`}>
+                        {t(`patients.${patient.status}`)}
+                      </span>
+                    </TableCell>
+                    <TableCell className='text-end font-medium tabular-nums'>
+                      {formatNumber(locale, patient.cost)}
+                    </TableCell>
+                    <TableCell className='text-end'>
+                      <div className='tabular-nums'>
+                        {patient.createdAt ? formatDate(locale, patient.createdAt) : ''}
+                      </div>
+                    </TableCell>
+                    <TableCell className='text-end'>
+                      <div className='flex justify-end gap-2'>
+                        <EditPatientDialog patient={patient} />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
     </div>
   );
 }
