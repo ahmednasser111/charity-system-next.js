@@ -324,7 +324,7 @@ export function CreatePatientDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Add Patient</Button>
+        <Button suppressHydrationWarning>Add Patient</Button>
       </DialogTrigger>
       <BasePatientDialog open={open} setOpen={setOpen} mode="create" />
     </Dialog>
@@ -341,7 +341,7 @@ export function EditPatientDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" suppressHydrationWarning>
           Edit
         </Button>
       </DialogTrigger>
