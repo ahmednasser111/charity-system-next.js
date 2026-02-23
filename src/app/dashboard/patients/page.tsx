@@ -1,6 +1,6 @@
 import dbConnect from '@/lib/dbConnect';
 import Patient from '@/models/Patient';
-import { CreatePatientDialog } from '@/components/dashboard/patients/CreatePatientDialog';
+import { CreatePatientDialog, EditPatientDialog } from '@/components/dashboard/patients/CreatePatientDialog';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { redirect } from 'next/navigation';
@@ -34,12 +34,13 @@ export default async function PatientsPage() {
               <TableHead>Status</TableHead>
               <TableHead>Requested Cost</TableHead>
               <TableHead>Date Added</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {patients.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center">
+                <TableCell colSpan={6} className="h-24 text-center">
                   No patients found.
                 </TableCell>
               </TableRow>
@@ -51,6 +52,9 @@ export default async function PatientsPage() {
                   <TableCell>{patient.status}</TableCell>
                   <TableCell>${patient.cost}</TableCell>
                   <TableCell>{new Date(patient.createdAt).toLocaleDateString()}</TableCell>
+                  <TableCell className="text-right space-x-2">
+                    <EditPatientDialog patient={patient} />
+                  </TableCell>
                 </TableRow>
               ))
             )}

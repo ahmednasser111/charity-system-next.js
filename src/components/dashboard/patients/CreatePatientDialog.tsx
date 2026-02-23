@@ -21,8 +21,23 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-export function CreatePatientDialog() {
-  const [open, setOpen] = useState(false);
+interface BasePatientDialogProps {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  initialValues?: Partial<PatientInput>;
+  patientId?: string;
+  mode: 'create' | 'edit';
+  onSuccess?: () => void;
+}
+
+function BasePatientDialog({
+  open,
+  setOpen,
+  initialValues,
+  patientId,
+  mode,
+  onSuccess,
+}: BasePatientDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -41,26 +56,31 @@ export function CreatePatientDialog() {
       diagnosis: '',
       solution: '',
       cost: 0,
+      ...initialValues,
     },
   });
 
   async function onSubmit(data: PatientInput) {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/patients', {
-        method: 'POST',
+      const url = patientId ? `/api/patients/${patientId}` : '/api/patients';
+      const method = patientId ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
 
       if (!res.ok) {
-        throw new Error('Failed to create patient');
+        throw new Error('Failed to save patient');
       }
 
-      toast.success('Patient created successfully');
+      toast.success(`Patient ${mode === 'create' ? 'created' : 'updated'} successfully`);
       setOpen(false);
       form.reset();
       router.refresh();
+      onSuccess?.();
     } catch (error) {
       toast.error('Something went wrong');
     } finally {
@@ -70,14 +90,13 @@ export function CreatePatientDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>Add Patient</Button>
-      </DialogTrigger>
       <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add New Patient</DialogTitle>
+          <DialogTitle>{mode === 'create' ? 'Add New Patient' : 'Edit Patient'}</DialogTitle>
           <DialogDescription>
-            Enter the details for the new patient beneficiary.
+            {mode === 'create'
+              ? 'Enter the details for the new patient beneficiary.'
+              : 'Update the details for this patient.'}
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -143,7 +162,7 @@ export function CreatePatientDialog() {
                             <SelectTrigger><SelectValue placeholder="Select Status" /></SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {['pending', 'approved', 'rejected', 'completed'].map(state => (
+                            {['pending', 'approved', 'rejected'].map(state => (
                                 <SelectItem key={state} value={state}>{state}</SelectItem>
                             ))}
                           </SelectContent>
@@ -167,12 +186,50 @@ export function CreatePatientDialog() {
                   />
               </div>
               <Button type="submit" disabled={isLoading} className="w-full">
-                Save Patient
+                {mode === 'create' ? 'Save Patient' : 'Update Patient'}
               </Button>
             </form>
           </Form>
         </div>
       </DialogContent>
+    </Dialog>
+  );
+}
+
+export function CreatePatientDialog() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button>Add Patient</Button>
+      </DialogTrigger>
+      <BasePatientDialog open={open} setOpen={setOpen} mode="create" />
+    </Dialog>
+  );
+}
+
+export function EditPatientDialog({
+  patient,
+}: {
+  patient: any;
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm">
+          Edit
+        </Button>
+      </DialogTrigger>
+      <BasePatientDialog
+        open={open}
+        setOpen={setOpen}
+        mode="edit"
+        patientId={patient._id}
+        initialValues={patient}
+      />
     </Dialog>
   );
 }
